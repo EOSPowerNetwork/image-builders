@@ -1,5 +1,8 @@
 name: "Generate Ubuntu 22.04 leap images"
 
+env:
+  GITHUB_OUTPUT: ""
+
 on:
   workflow_dispatch:
       inputs:
@@ -26,11 +29,11 @@ jobs:
           REGISTRY="ghcr.io"
           IMAGE="${REGISTRY}/${{ github.repository_owner }}/leap-dependencies-ubuntu-2204"
           TAGS="${IMAGE}:${{ github.sha }},${IMAGE}:${{ github.event.inputs.version }}"
-          echo "tags=${TAGS,,}" >> $GITHUB_ENV
+          echo "tags=${TAGS,,}" >> $GITHUB_OUTPUT
 
       - name: Showtag
         id: showtag
-        run: echo "${{ github.env.tags }}"
+        run: echo ${{ steps.prep.outputs.tags }}
 
       - name: Docker Buildx setup
         uses: docker/setup-buildx-action@v1
@@ -50,7 +53,7 @@ jobs:
           context: .
           push: true
           file: .cicd/platforms/ubuntu22.Dockerfile
-          tags: ${{ github.env.tags }}
+          tags: ${{ steps.prep.outputs.tags }}
 
   leap-image:
     needs: leap-dependencies-image
@@ -69,11 +72,11 @@ jobs:
           REGISTRY="ghcr.io"
           IMAGE="${REGISTRY}/${{ github.repository_owner }}/leap-ubuntu-2204"
           TAGS="${IMAGE}:${{ github.sha }},${IMAGE}:${{ github.event.inputs.version }}"
-          echo "tags=${TAGS,,}" >> $GITHUB_ENV
+          echo "tags=${TAGS,,}" >> $GITHUB_OUTPUT
 
       - name: Showtag
         id: showtag
-        run: echo "${{ github.env.tags }}"
+        run: echo ${{ steps.prep.outputs.tags }}
 
       - name: Docker Buildx setup
         uses: docker/setup-buildx-action@v1
@@ -95,4 +98,4 @@ jobs:
           build-args: |
             LEAP_VER=${{ github.event.inputs.version }}
           file: docker/ubuntu_2204-leap.Dockerfile
-          tags: ${{ github.env.tags }}
+          tags: ${{ steps.prep.outputs.tags }}
