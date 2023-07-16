@@ -12,7 +12,7 @@ on:
 
 jobs:
   build-and-upload-image:
-    name: Build image
+    name: Build and upload leap dependencies image
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
