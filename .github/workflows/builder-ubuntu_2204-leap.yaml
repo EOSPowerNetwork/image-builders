@@ -50,7 +50,7 @@ jobs:
           context: .
           push: true
           file: .cicd/platforms/ubuntu22.Dockerfile
-          tags: ${{ steps.prep.outputs.tags }}
+          tags: ${{ github.env.tags }}
 
   leap-image:
     needs: leap-dependencies-image
@@ -67,7 +67,7 @@ jobs:
         id: prep
         run: |
           REGISTRY="ghcr.io"
-          IMAGE="${REGISTRY}/${{ github.repository_owner }}/leap-dependencies-ubuntu-2204"
+          IMAGE="${REGISTRY}/${{ github.repository_owner }}/leap-ubuntu-2204"
           TAGS="${IMAGE}:${{ github.sha }},${IMAGE}:${{ github.event.inputs.version }}"
           echo "tags=${TAGS,,}" >> $GITHUB_ENV
 
@@ -95,4 +95,4 @@ jobs:
           build-args: |
             LEAP_VER=${{ github.event.inputs.version }}
           file: docker/ubuntu_2204-leap.Dockerfile
-          tags: ${{ steps.prep.outputs.tags }}
+          tags: ${{ github.env.tags }}
