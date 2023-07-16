@@ -54,7 +54,7 @@ jobs:
 
   leap-image:
     needs: leap-dependencies-image
-    name: Build and upload leap build image
+    name: Leap image
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
