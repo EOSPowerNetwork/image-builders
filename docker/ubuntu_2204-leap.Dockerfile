@@ -1,14 +1,15 @@
 ARG LEAP_VER
 FROM ghcr.io/eospowernetwork/leap-dependencies-ubuntu-2204:${LEAP_VER}
 
-ENV LEAP_VERSION=${LEAP_VER}
+# need to redeclare arg to add it to the same build context
+ARG LEAP_VER
 
 # Install leap
 RUN mkdir -p /root/leap \
     && cd /root/leap \
     && git clone https://github.com/AntelopeIO/leap.git .  \
     && git fetch --all --tags                              \
-    && git checkout v$ENV:LEAP_VERSION                     \
+    && git checkout v${LEAP_VER}                           \
     && git submodule update --init --recursive
 
 # Build & install leap
